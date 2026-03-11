@@ -1,0 +1,4 @@
+# 预处理与训练产出
+data/.precomputed/
+outputs/
+configs/_generated_char_lora.yaml

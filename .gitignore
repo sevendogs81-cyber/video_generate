@@ -1,0 +1,3 @@
+# 忽略大模型权重
+train_lora/*.safetensors
+*.mp4

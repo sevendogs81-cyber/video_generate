@@ -1,0 +1,8 @@
+# 基础
+moviepy>=2.0.0
+torch>=2.4.0
+transformers accelerate safetensors
+
+# Wan2.2 I2V 需从 main 安装 diffusers（PyPI 尚未包含 Wan pipeline）
+# pip install git+https://github.com/huggingface/diffusers.git
+diffusers

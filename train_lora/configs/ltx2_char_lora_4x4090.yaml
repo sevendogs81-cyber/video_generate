@@ -1,0 +1,91 @@
+# LTX-2 固定角色 LoRA 训练配置（4×4090）
+# 路径由 run_train.py 在运行时替换，无需手动改
+
+output_dir: "OUTPUT_DIR"
+
+model:
+  model_path: "MODEL_PATH"
+  text_encoder_path: "TEXT_ENCODER_PATH"
+  training_mode: "lora"
+  load_checkpoint: null
+
+lora:
+  rank: 32
+  alpha: 32
+  dropout: 0.05
+  target_modules:
+    - "attn1.to_k"
+    - "attn1.to_q"
+    - "attn1.to_v"
+    - "attn1.to_out.0"
+    - "attn2.to_k"
+    - "attn2.to_q"
+    - "attn2.to_v"
+    - "attn2.to_out.0"
+
+training_strategy:
+  name: "text_to_video"
+  first_frame_conditioning_p: 0.3
+  with_audio: false
+  audio_latents_dir: "audio_latents"
+
+optimization:
+  learning_rate: 5.0e-5
+  steps: 3000
+  batch_size: 1
+  gradient_accumulation_steps: 1
+  max_grad_norm: 1.0
+  optimizer_type: "adamw"
+  scheduler_type: "cosine"
+  scheduler_params: {}
+  enable_gradient_checkpointing: true
+
+acceleration:
+  mixed_precision_mode: "bf16"
+  quantization: null
+  load_text_encoder_in_8bit: false
+
+data:
+  preprocessed_data_root: "PREPROCESSED_DATA_ROOT"
+  num_dataloader_workers: 4
+
+validation:
+  prompts:
+    - "TRIGGER_TOKEN, close-up, indoors, 4k, soft lighting, ultra detailed"
+    - "TRIGGER_TOKEN, medium shot, standing, casual clothes, sharp focus"
+  negative_prompt: "blurry, worst quality, distorted face, deformed eyes, extra limbs"
+  images: null
+  reference_videos: null
+  video_dims: [960, 544, 49]
+  frame_rate: 24.0
+  seed: 42
+  inference_steps: 30
+  interval: 200
+  videos_per_prompt: 1
+  guidance_scale: 4.0
+  stg_scale: 1.0
+  stg_blocks: [29]
+  stg_mode: "stg_v"
+  generate_audio: false
+  skip_initial_validation: false
+  include_reference_in_output: false
+
+checkpoints:
+  interval: 500
+  keep_last_n: 3
+  precision: bfloat16
+
+hub:
+  push_to_hub: false
+  hub_model_id: null
+
+wandb:
+  enabled: false
+  project: "ltx2-char-lora"
+  entity: null
+  tags: []
+  log_validation_videos: true
+
+flow_matching:
+  timestep_sampling_mode: "shifted_logit_normal"
+  timestep_sampling_params: {}
